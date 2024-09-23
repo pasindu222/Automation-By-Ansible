@@ -1,41 +1,54 @@
-Automating Windows Client User Switch with Ansible
-This project demonstrates the use of Ansible, an open-source automation tool, to automate user management tasks on Windows client PCs from a Linux server. Specifically, the playbook switches all connected Windows client machines to a separate user account simultaneously without requiring manual credential input.
+# Ansible Project: Automatically Log into Different User Accounts on Windows PCs
 
-Features
-Automated user switch across multiple Windows client PCs.
-Centralized control from a Linux server.
-Efficiency in managing large-scale user account switches.
-Technologies Used
-Ansible: For configuration management and automation.
-Linux: The server operating system to run the Ansible playbooks.
-Windows: The client machines where the user switch is performed.
-Instructions
-Clone the repository to your Ansible control machine (Linux server).
+## **Description:**
+This project uses **Ansible** to automate the process of logging into different user accounts on multiple **Windows** client machines from a **Linux** server without manually typing credentials. 
 
-bash
-Copy code
-git clone https://github.com/yourusername/your-repository.git
-Update the inventory file with the Windows client IP addresses.
+## **Key Features:**
+- **Automated User Switch:** 
+  - Automatically switch all Windows client PCs to a specified user account simultaneously.
+  
+- **Efficient User Management:** 
+  - Manage multiple Windows clients through one central **Linux** server using **Ansible**.
+  
+- **Credential-less Login:**
+  - No need to manually enter credentials for each user account switch.
 
-ini
-Copy code
-[windows]
-192.168.1.101
-192.168.1.102
-Edit the playbook.yml file to customize the target user account.
+## **Technologies Used:**
+- **Ansible** for automation.
+- **Linux** server for orchestration.
+- **Windows** client machines.
 
-yaml
-Copy code
----
-- name: Switch Windows Clients to a Different User Account
-  hosts: windows
-  tasks:
-    - name: Switch user account
-      win_shell: net user newusername newpassword
-Run the playbook to apply the changes across all Windows client machines.
+## **Prerequisites:**
+1. Ensure Ansible is installed on your Linux server.
+    ```bash
+    sudo apt update
+    sudo apt install ansible
+    ```
 
-bash
-Copy code
-ansible-playbook playbook.yml -i inventory
-Contributing
-Feel free to fork this repository, submit issues, and send pull requests. Contributions and suggestions for improvements are always welcome.
+2. Set up SSH connectivity to Windows machines (e.g., using `pywinrm` for remote management).
+
+3. Configure Windows clients to accept Ansible commands.
+    - Install WinRM on Windows clients.
+    - Open PowerShell and run:
+    ```powershell
+    winrm quickconfig
+    ```
+
+## **Usage:**
+1. Clone this repository:
+    ```bash
+    git clone https://github.com/yourusername/ansible-windows-user-switch.git
+    ```
+
+2. Update the inventory file with the IP addresses of the Windows client machines.
+
+3. Run the Ansible playbook to switch users:
+    ```bash
+    ansible-playbook switch-user.yml
+    ```
+
+4. Verify the changes by logging into the Windows clients.
+
+
+## **Contact:**
+For any queries, contact me at [pasindu.erangak@gmail.com].
