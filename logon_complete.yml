@@ -5,7 +5,7 @@
   become_method: runas
 
   vars:
-          ansible_become_password: D0not2use@agc
+          ansible_become_password: "Administrator password of the client PC"
 
   tasks:
           - name: get username
@@ -32,8 +32,8 @@
                     stdin: |
                             $path = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
                             Set-ItemProperty -Path $path -Name "AutoAdminLogon" -Value "1"
-                            Set-ItemProperty -Path $path -Name "DefaultUsername" -Value "{{windows_username}}.d"
-                            Set-ItemProperty -Path $path -Name "DefaultPassword" -Value "agc@123"
+                            Set-ItemProperty -Path $path -Name "DefaultUsername" -Value "{{windows_username}}"
+                            Set-ItemProperty -Path $path -Name "DefaultPassword" -Value "password"
                             Set-ItemProperty -Path $path -Name "ForceAutoLogon" -Value "1"
             become: yes
             become_user: Administrator
