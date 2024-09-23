@@ -1,0 +1,58 @@
+---
+- name: test
+  hosts: windows
+  gather_facts: false
+  become_method: runas
+
+  vars:
+          ansible_become_password: D0not2use@agc
+
+  tasks:
+          - name: get username
+            win_command: powershell.exe -
+            args:
+                    stdin: |
+                            Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
+            register: username_output
+
+            become: yes
+            become_user: Administrator
+
+          - name: fact
+            set_fact:
+                    windows_username: "{{ username_output.stdout_lines[0] }}"
+
+          - name: display username
+            debug:
+                    msg: "username is {{ windows_username }}" 
+
+
+          - win_command: powershell.exe -
+            args:
+                    stdin: |
+                            $path = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+                            Set-ItemProperty -Path $path -Name "AutoAdminLogon" -Value "1"
+                            Set-ItemProperty -Path $path -Name "DefaultUsername" -Value "{{windows_username}}.d"
+                            Set-ItemProperty -Path $path -Name "DefaultPassword" -Value "agc@123"
+                            Set-ItemProperty -Path $path -Name "ForceAutoLogon" -Value "1"
+            become: yes
+            become_user: Administrator
+
+          - name: Reboot
+            ansible.windows.win_reboot:
+                    msg: "reboot by ansible"
+                    pre_reboot_delay: 5
+                    post_reboot_delay: 10
+
+          - name: reset the settings
+            win_command: powershell.exe -
+            args:
+                    stdin: |
+                            $path = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+                            Set-ItemProperty -Path $path -Name "AutoAdminLogon" -Value "0"
+                            Remove-ItemProperty -Path $path -Name "DefaultUsername"
+                            Remove-ItemProperty -Path $path -Name "DefaultPassword"
+                            Remove-ItemProperty -Path $path -Name "ForceAutoLogon"
+            become: yes
+            become_user: Administrator
+
