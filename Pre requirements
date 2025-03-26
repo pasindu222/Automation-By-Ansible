@@ -1,0 +1,24 @@
+``Make static ip for ubuntu server``
+``Edit the Netplan Configuration File -(Common files: 00-installer-config.yaml, 01-netcfg.yaml, or 50-cloud-init.yaml.) ``
+
+sudo nano /etc/netplan/00-installer-config.yaml
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens33:  # Replace with your interface name
+      dhcp4: no
+      addresses:
+        - 192.168.1.100/24  # Your desired static IP and subnet
+      routes:
+        - to: default
+          via: 192.168.1.1   # Your gateway IP
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]  # Google DNS (or use your router's DNS)
+
+sudo chmod 600 /etc/netplan/00-installer-config.yaml
+sudo netplan apply
+
+
+``Install Ansible``
